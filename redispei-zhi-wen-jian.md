@@ -25,14 +25,11 @@
  设置数据库的个数，可以使用SELECT 命令来切换数据库。默认使用的数据库是0号库。默认16个库
 
 * 保存数据快照
-
   save 900 1  
   save 300 10
   save 60 10000
-  保存数据快照的频率，即将数据持久化到dump.rdb文件中的频度。
-  用来描述"在多少秒期间至少多少个变更操作"触发snapshot数据保存动作
+  保存数据快照的频率，即将数据[持久化](/chi-jiu-hua.md)到dump.rdb文件中的频度。用来描述"在多少秒期间至少多少个变更操作"触发snapshot数据保存动作
   默认设置，意思是：
-  
   if\(在60 秒之内有10000 个keys 发生变化时\){
   
   进行镜像备份
@@ -49,291 +46,123 @@
 
 * stop-writes-on-bgsave-error yes
 
- 当持久化出现错误时，是否依然继续进行工作，
+ 当持久化出现错误时，是否依然继续进行工作，是否终止所有的客户端write请求。默认设置
  
- 是否终止所有的客户端write请求。默认设置
+  * "yes"表示终止，一旦snapshot数据保存故障，那么此server为只读服务。
  
- "yes"表示终止，一旦snapshot数据保存故障，那么此server为只读服务。
- 
- 如果为"no"，那么此次snapshot将失败，但下一次snapshot不会受到影响，不过如果出现故障,数据只能恢复到"最近一个成功点"
+  * "no"，那么此次snapshot将失败，但下一次snapshot不会受到影响，不过如果出现故障,数据只能恢复到"最近一个成功点"
 
-* rdbcompression yes
+* rdbcompression yes 在进行数据镜像备份时，是否启用rdb文件压缩手段，默认为yes。压缩可能需要额外的cpu开支，不过这能够有效的减小rdb文件的大，有利于存储/备份/传输/数据恢复
 
- 在进行数据镜像备份时，
- 
- 是否启用rdb文件压缩手段，默认为yes。
- 
- 压缩可能需要额外的cpu开支，不过这能够有效的减小rdb文件的大，有利于存储/备份/传输/数据恢复
+* rdbchecksum yes 读取和写入时候，会损失10%性能 是否进行校验和，是否对rdb文件使用CRC64校验和,默认为"yes"，那么每个rdb文件内容的末尾都会追加CRC校验和，利于第三方校验工具检测文件完整性
 
-* rdbchecksum yes
+* dbfilename dump.rdb 镜像备份文件的文件名，默认为 dump.rdb
 
- 读取和写入时候，会损失10%性能
- 
- 是否进行校验和，
- 
- 是否对rdb文件使用CRC64校验和,默认为"yes"，那么每个rdb文件内容的末尾都会追加CRC校验和，利于第三方校验工具检测文件完整性
+* dir ./ 数据库镜像备份的文件 rdb/AOF文件放置的路径。这里的路径跟文件名要分开配置是因为Redis 在进行备份时，先会将当前数据库的状态写入到一个临时文件中，等备份完成时，再把该临时文件替换为上面所指定的文件，而这里的临时文件和上面所配置的备份文件都会放在这个指定的路径当中
 
-* dbfilename dump.rdb
+* slaveof &lt; masterip &gt; &lt; masterport &gt;
+设置该数据库为其他数据库的从数据库，并为其指定master信息。
 
- 镜像备份文件的文件名，默认为 dump.rdb
+* masterauth 当主数据库连接需要密码验证时，在这里指定
 
-* dir ./
+* slave-serve-stale-data yes
+ 当主master服务器挂机或主从复制在进行时，是否依然可以允许客户访问可能过期的数据。在"yes"情况下,slave继续向客户端提供只读服务,有可能此时的数据已经过期，在"no"情况下，任何向此server发送的数据请求服务\(包括客户端和此server的slave\)都将被告知"error"
 
- 数据库镜像备份的文件
- 
- rdb/AOF文件
- 
- 放置的路径。这里的路径跟文件名要分开配置是因为Redis 在进行备份时，先会将当前数据库的状态写入到一个临时文件中，等备份完成时，再把该临时文件替换为上面所指定的文件，而这里的临时文件和上面所配置的备份文件都会放在这个指定的路径当中
+* slave-read-only yes
+  slave是否为"只读"，强烈建议为"yes"
 
-16 \# slaveof 
+* repl-ping-slave-period 10
+  slave向指定的master发送ping消息的时间间隔\(秒\)，默认为10
 
-&lt;
+* repl-timeout 60
+  slave与master通讯中,最大空闲时间,默认60秒.超时将导致连接关闭
 
-masterip
+* repl-disable-tcp-nodelay no
+  slave与master的连接,是否禁用TCP nodelay选项。
+  * "yes"表示禁用,那么socket通讯中数据将会以packet方式发送\(packet大小受到socket buffer限制\)。可以提高socket通讯的效率\(tcp交互次数\),但是小数据将会被buffer,不会被立即发送,对于接受者可能存在延迟。
 
-&gt;
+  * "no"表示开启tcp nodelay选项,任何数据都会被立即发送,及时性较好,但是效率较低，建议设为no
 
-&lt;
+* slave-priority 100
+ 适用Sentinel模块\(unstable,M-S集群管理和监控\),需要额外的配置文件支持。slave的权重值,默认100.当master失效后,Sentinel将会从slave列表中找到权重值最低\( &gt; 0 \)的slave,并提升为master。如果权重值为0,表示此slave为"观察者",不参与master选举
 
-masterport
+* requirepass foobared
+  设置客户端连接后进行任何其他指定前需要使用的密码。警告：因为redis 速度相当快，所以在一台比较好的服务器下，一个外部的用户可以在一秒钟进行150K 次的密码尝试，这意味着你需要指定非常非常强大的密码来防止暴力破解。
 
-&gt;
-
-设置该数据库为其他数据库的从数据库，
-
-并为其指定master信息。
-
-17 masterauth
-
-当主数据库连接需要密码验证时，在这里指定
-
-18 slave-serve-stale-data yes
-
-当主master服务器挂机或主从复制在进行时，是否依然可以允许客户访问可能过期的数据。
-
-在"yes"情况下,slave继续向客户端提供只读服务,有可能此时的数据已经过期；
-
-在"no"情况下，任何向此server发送的数据请求服务\(包括客户端和此server的slave\)都将被告知"error"
-
-19 slave-read-only yes
-
-slave是否为"只读"，强烈建议为"yes"
-
-20 \# repl-ping-slave-period 10
-
-slave向指定的master发送ping消息的时间间隔\(秒\)，默认为10
-
-21 \# repl-timeout 60
-
-slave与master通讯中,最大空闲时间,默认60秒.超时将导致连接关闭
-
-22 repl-disable-tcp-nodelay no
-
-slave与master的连接,是否禁用TCP nodelay选项。
-
-"yes"表示禁用,那么socket通讯中数据将会以packet方式发送\(packet大小受到socket buffer限制\)。
-
-可以提高socket通讯的效率\(tcp交互次数\),但是小数据将会被buffer,不会被立即发送,对于接受者可能存在延迟。
-
-"no"表示开启tcp nodelay选项,任何数据都会被立即发送,及时性较好,但是效率较低，建议设为no
-
-23 slave-priority 100
-
-适用Sentinel模块\(unstable,M-S集群管理和监控\),需要额外的配置文件支持。
-
-slave的权重值,默认100.当master失效后,Sentinel将会从slave列表中找到权重值最低\(
-
-&gt;
-
-0\)的slave,并提升为master。
-
-如果权重值为0,表示此slave为"观察者",不参与master选举
-
-24 \# requirepass foobared
-
-设置客户端连接后进行任何其他指定前需要使用的密码。警告：因为redis 速度相当快，所以在一台比较好的服务器下，一个外部的用户可以在一秒钟进行150K 次的密码尝试，这意味着你需要指定非常非常强大的密码来防止暴力破解。
-
-25 
-
-\# 
-
-rename-command
+* rename-command
 
  CONFIG 3ed984507a5dcd722aeade310065ce5d 
 
    \(方式:MD5\('CONFIG^!'\)\)
 
-重命名指令,对于一些与"server"控制有关的指令,可能不希望远程客户端\(非管理员用户\)链接随意使用,
+ 重命名指令,对于一些与"server"控制有关的指令,可能不希望远程客户端\(非管理员用户\)链接随意使用,那么就可以把这些指令重命名为"难以阅读"的其他字符串
 
-那么就可以把这些指令重命名为"难以阅读"的其他字符串
+* maxclients 10000
+ 限制同时连接的客户数量。当连接数超过这个值时，redis 将不再接收其他连接请求，客户端尝试连接时将收到error 信息。默认为10000，要考虑系统文件描述符限制，不宜过大，浪费文件描述符，具体多少根据具体情况而定
 
-26 \# maxclients 10000
+* maxmemory &lt; bytes &gt;
+redis-cache所能使用的最大内存\(bytes\),默认为0,表示"无限制",最终由OS物理内存大小决定\(如果物理内存不足,有可能会使用swap\)。此值尽量不要超过机器的物理内存尺寸,从性能和实施的角度考虑,可以为物理内存3/4。此配置需要和"maxmemory-policy"配合使用,当redis中内存数据达到maxmemory时,触发"清除策略"。在"内存不足"时,任何write操作\(比如set,lpush等\)都会触发"清除策略"的执行。在实际环境中,建议redis的所有物理机器的硬件配置保持一致\(内存一致\),同时确保master/slave中"maxmemory""policy"配置一致。当内存满了的时候，如果还接收到set 命令，redis 将先尝试剔除设置过expire 信息的key，而不管该key 的过期时间还没有到达。在删除时将按照过期时间进行删除，最早将要被过期的key 将最先被删除。如果带有expire 信息的key 都删光了，内存还不够用，那么将返回错误。这样，redis 将不再接收写请求，只接收get 请求。maxmemory 的设置比较适合于把redis 当作于类似memcached的缓存来使用。
 
-限制同时连接的客户数量。当连接数超过这个值时，redis 将不再接收其他连接请求，客户端尝试连接时将收到error 信息。
+* maxmemory-policy volatile-lru
+  内存不足"时,数据清除策略,默认为"volatile-lru"。
 
-默认为10000，要考虑系统文件描述符限制，不宜过大，浪费文件描述符，具体多少根据具体情况而定
+  * volatile-lru 对"过期集合"中的数据采取LRU (近期最少使用)[算法](http://lib.csdn.net/base/datastructure)如果对key使用"expire"指令指定了过期时间,那么此key将会被添加到"过期集合"中。将已经过期或者LRU的数据优先移除.如果"过期集合"中全部移除仍不能满足内存需求,将OOM.
 
-27 \# maxmemory 
+  * allkeys-lru 对所有的数据,采用LRU算法
 
-&lt;
+  * volatile-random 对"过期集合"中的数据采取"随即选取"算法,并移除选中的K-V,直到"内存足够"为止.如果如果"过期集合"中全部移除全部移除仍不能满足,将OOM
 
-bytes
+  * allkeys-random 对所有的数据,采取"随机选取"算法,并移除选中的K-V,直到"内存足够"为止
 
-&gt;
+  * volatile-ttl 对"过期集合"中的数据采取TTL算法\(最小存活时间\),移除即将过期的数据.
 
-redis-cache所能使用的最大内存\(bytes\),默认为0,表示"无限制",最终由OS物理内存大小决定\(如果物理内存不足,有可能会使用swap\)。
+  * noeviction 不做任何干扰操作,直接返回OOM异常
 
-此值尽量不要超过机器的物理内存尺寸,从性能和实施的角度考虑,可以为物理内存3/4。
+> 另外，如果数据的过期不会对"应用系统"带来异常,且系统中write操作比较密集,建议采取 allkeys-lru
 
-此配置需要和"maxmemory-policy"配合使用,当redis中内存数据达到maxmemory时,触发"清除策略"。
 
-在"内存不足"时,任何write操作\(比如set,lpush等\)都会触发"清除策略"的执行。
 
-在实际环境中,建议redis的所有物理机器的硬件配置保持一致\(内存一致\),同时确保master/slave中"maxmemory""policy"配置一致。
+* maxmemory-samples 3 默认值3，上面LRU和最小TTL 策略并非严谨的策略，而是大约估算的方式，因此Redis的LRU是取出配置的数目的key，然后从中选择一个最近最不经常使用的key进行置换
 
-当内存满了的时候，如果还接收到set 命令，redis 将先尝试剔除设置过expire 信息的key，而不管该key 的过期时间还没有到达。在删除时
-
-将按照过期时间进行删除，最早将要被过期的key 将最先被删除。如果带有expire 信息的key 都删光了，内存还不够用，那么将返回错误。这样，redis 将不再接收写请求，只接收get 请求。maxmemory 的设置比较适合于把redis 当作于类似memcached的缓存来使用。
-
-28 \# maxmemory-policy volatile-lru
-
-内存不足"时,数据清除策略,默认为"volatile-lru"。
-
-volatile-lru
-
-  -
-
-&gt;
-
-对"过期集合"中的数据采取LRU\(近期最少使用\)
-
-[算法](http://lib.csdn.net/base/datastructure)
-
-.如果对key使用"expire"指令指定了过期时间,那么此key将会被添加到"过期集合"中。
-
-将已经过期/LRU的数据优先移除.如果"过期集合"中全部移除仍不能满足内存需求,将OOM.
-
-allkeys-lru
-
- -
-
-&gt;
-
-对所有的数据,采用LRU算法
-
-volatile-random
-
- -
-
-&gt;
-
-对"过期集合"中的数据采取"随即选取"算法,并移除选中的K-V,直到"内存足够"为止.
-
- 如果如果"过期集合"中全部移除全部移除仍不能满足,将OOM
-
-allkeys-random
-
- -
-
-&gt;
-
-对所有的数据,采取"随机选取"算法,并移除选中的K-V,直到"内存足够"为止
-
-volatile-ttl
-
- -
-
-&gt;
-
-对"过期集合"中的数据采取TTL算法\(最小存活时间\),移除即将过期的数据.
-
-noeviction
-
- -
-
-&gt;
-
-不做任何干扰操作,直接返回OOM异常
-
-另外，如果数据的过期不会对"应用系统"带来异常,且系统中write操作比较密集,建议采取"
-
-allkeys-lru
-
-"
-
-29 \# maxmemory-samples 3
-
-默认值3，上面
-
-LRU和最小TTL
-
-策略并非严谨的策略，而是大约估算的方式，因此可以选择取样值以便检查
-
-29 appendonly no
-
-默认情况下，redis 会在后台异步的把数据库镜像备份到磁盘，但是该备份是非常耗时的，而且备份也不能很频繁。所以redis 提供了另外一种更加高效的数据库备份及灾难恢复方式。开启append only 模式之后，redis 会把所接收到的每一次写操作请求都追加到appendonly.aof 文件中，当redis 重新启动时，会从该文件恢复出之前的状态。但是这样会造成appendonly.aof 文件过大，所以redis 还支持了BGREWRITEAOF 指令，对appendonly.aof 进行重新整理。如果不经常进行数据迁移操作，推荐生产环境下的做法为关闭镜像，开启appendonly.aof，同时可以选择在访问较少的时间每天对appendonly.aof 进行重写一次。
-
+* appendonly no 默认情况下关闭，开启append only 模式之后，redis 会把所接收到的每一次写操作请求都追加到appendonly.aof 文件中，当redis 重新启动时，会从该文件恢复出之前的状态。
+但是这样会造appendonly.aof 文件过大，所以redis 还支持了BGREWRITEAOF 指令，对appendonly.aof 进行重新整理。如果不经常进行数据迁移操作，推荐生产环境下的做法为**关闭镜像（RDB）**，开启appendonly.aof，同时可以选择在访问较少的时间每天对appendonly.aof 进行重写一次。
 另外，对master机器,主要负责写，建议使用AOF,对于slave,主要负责读，挑选出1-2台开启AOF，其余的建议关闭
+   
+   > redis 会在后台异步的把数据库镜像备份到磁盘，但是该备份是非常耗时的，而且备份也不能很频繁。所以redis提供了另外一种更加高效的数据库[持久化](/chi-jiu-hua.md)及灾难恢复方式
+   
+   
+* appendfilename appendonly.aof 默认
+* appendfsync always 设置对appendonly.aof 文件进行同步的频率
+  
+  * always 表示每次有写操作都进行同步
+  
+  * everysec 表示对写操作进行累积，每秒同步一次
+  
+  * no 不主动fsync，由OS自己来完成
+ 
+  > 这个需要根据实际业务场景进行配置
 
-30 \# appendfilename appendonly.aof
+* no-appendfsync-on-rewrite no
+ 在aof rewrite期间,是否对aof新set的数据进行一起同步,主要考虑磁盘IO开支和请求阻塞时间。默认为no,表示"不暂缓",新的aof记录仍然会被立即同步
 
-aof文件名字，默认为
+ 
 
-appendonly.aof
+* auto-aof-rewrite-percentage 100
+ 当Aof log增长超过指定比例时，重写log file， 设置为0表示不自动重写Aof 日志，重写是为了使aof体积保持最小，而确保保存最完整的数据。
 
-31 
+* auto-aof-rewrite-min-size 64mb 触发aof rewrite的最小文件尺寸
 
-\# appendfsync always
+* lua-time-limit 5000 lua脚本运行的最大时间
 
-appendfsync everysec
-
-\# appendfsync no
-
-设置对appendonly.aof 文件进行同步的频率。always 表示每次有写操作都进行同步，everysec 表示对写操作进行累积，每秒同步一次。
-
-no不主动fsync，由OS自己来完成。
-
-这个需要根据实际业务场景进行配置
-
-32 no-appendfsync-on-rewrite no
-
-在aof rewrite期间,是否对aof新记录的append暂缓使用文件同步策略,主要考虑磁盘IO开支和请求阻塞时间。
-
-默认为no,表示"不暂缓",新的aof记录仍然会被立即同步
-
-33 
-
-auto-aof-rewrite-percentage
-
- 100
-
-当Aof log增长超过指定比例时，重写log file， 设置为0表示不自动重写Aof 日志，重写是为了使aof体积保持最小，而确保保存最完整的数据。
-
-34 auto-aof-rewrite-min-size 64mb
-
-触发aof rewrite的最小文件尺寸
-
-35 lua-time-limit 5000
-
-lua脚本运行的最大时间
-
-36 slowlog-log-slower-than 10000
-
-"慢操作日志"记录,单位:微秒\(百万分之一秒,1000 \* 1000\),如果操作时间超过此值,将会把command信息"记录"起来.\(内存,非文件\)。
-
-其中"操作时间"不包括网络IO开支,只包括请求达到server后进行"内存实施"的时间."0"表示记录全部操作
+* slowlog-log-slower-than 10000
+ "慢操作日志"记录,单位:微秒\(百万分之一秒,1000 \* 1000\),如果操作时间超过此值,将会把command信息"记录"起来.\(内存,非文件\)。其中"操作时间"不包括网络IO开支,只包括请求达到server后进行"内存实施"的时间."0"表示记录全部操作
 
 37 slowlog-max-len 128
-
-"慢操作日志"保留的最大条数,"记录"将会被队列化,如果超过了此长度,旧记录将会被移除。
+ "慢操作日志"保留的最大条数,"记录"将会被队列化,如果超过了此长度,旧记录将会被移除。
 
 可以通过"SLOWLOG 
 
-&lt;
-
-subcommand
-
-&gt;
+&lt; subcommand &gt;
 
  args"查看慢记录的信息\(SLOWLOG get 10,SLOWLOG reset\)
 
