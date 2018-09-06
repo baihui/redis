@@ -132,6 +132,7 @@ redis-cache所能使用的最大内存\(bytes\),默认为0,表示"无限制",最
    
    
 * appendfilename appendonly.aof 默认
+
 * appendfsync always 设置对appendonly.aof 文件进行同步的频率
   
   * always 表示每次有写操作都进行同步
@@ -140,7 +141,7 @@ redis-cache所能使用的最大内存\(bytes\),默认为0,表示"无限制",最
   
   * no 不主动fsync，由OS自己来完成
  
-  > 这个需要根据实际业务场景进行配置
+  > 这个需要根据实际业务场景进行配置，该配置项是函数[flushAppendOnlyFile](/chi-jiu-hua.md)的参数值
 
 * no-appendfsync-on-rewrite no
  在aof rewrite期间,是否对aof新set的数据进行一起同步,主要考虑磁盘IO开支和请求阻塞时间。默认为no,表示"不暂缓",新的aof记录仍然会被立即同步
