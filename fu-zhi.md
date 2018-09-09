@@ -44,10 +44,10 @@ PSYNC命令具有完整重同步（fullresynchronization）和部分重同步（
 
     在命令传播阶段,从服务器默认会以每秒一次的频率,向主服务器发送命令：
      
-     ```
-     REPLCONF ACK <replication_ offset>
-     
-     ```
+ ```
+ REPLCONF ACK <replication_ offset>
+ 
+ ```
 其中replication_offset 是从服务器当前的复制偏移量
 
 
