@@ -161,15 +161,9 @@ redis-cache所能使用的最大内存\(bytes\),默认为0,表示"无限制",最
 37 slowlog-max-len 128
  "慢操作日志"保留的最大条数,"记录"将会被队列化,如果超过了此长度,旧记录将会被移除。
 
-可以通过"SLOWLOG 
+可以通过"SLOWLOG &lt; subcommand &gt; args"查看慢记录的信息\(SLOWLOG get 10,SLOWLOG reset\)
 
-&lt; subcommand &gt;
-
- args"查看慢记录的信息\(SLOWLOG get 10,SLOWLOG reset\)
-
-38
-
- hash-max-ziplist-entries 512
+38 hash-max-ziplist-entries 512
 
 hash类型的数据结构在编码上可以使用ziplist和hashtable。
 
