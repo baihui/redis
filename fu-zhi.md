@@ -24,7 +24,7 @@ PSYNC命令具有完整重同步（fullresynchronization）和部分重同步（
            
            
                > 复制积压缓冲区是master服务器维护的固定长度，先进先出的队列（FIFO）默认大小1M
-               通过修改redis.conf 中 repl-backlog-size **设置大小**
+               [通过修改redis.conf中](/redispei-zhi-wen-jian.md) repl-backlog-size **设置大小**
                Repl-backlog-size 公式计算 （slave（从服务器掉线平均秒）*master-writer（主服务器每秒的写入量））
                
         * **服务器的运行ID（runID）**
