@@ -158,94 +158,45 @@ redis-cache所能使用的最大内存\(bytes\),默认为0,表示"无限制",最
 * slowlog-log-slower-than 10000
  "慢操作日志"记录,单位:微秒\(百万分之一秒,1000 \* 1000\),如果操作时间超过此值,将会把command信息"记录"起来.\(内存,非文件\)。其中"操作时间"不包括网络IO开支,只包括请求达到server后进行"内存实施"的时间."0"表示记录全部操作
 
-37 slowlog-max-len 128
- "慢操作日志"保留的最大条数,"记录"将会被队列化,如果超过了此长度,旧记录将会被移除。
+* slowlog-max-len 128
+ "慢操作日志"保留的最大条数,"记录"将会被队列化,如果超过了此长度,旧记录将会被移除。可以通过"SLOWLOG &lt; subcommand &gt; args"查看慢记录的信息\(SLOWLOG get 10,SLOWLOG reset\)
 
-可以通过"SLOWLOG &lt; subcommand &gt; args"查看慢记录的信息\(SLOWLOG get 10,SLOWLOG reset\)
+* hash-max-ziplist-entries 512
+ hash类型的数据结构在编码上可以使用ziplist和hashtable。ziplist的特点就是文件存储\(以及内存存储\)所需的空间较小,在内容较小时,性能和hashtable几乎一样.因此redis对hash类型默认采取ziplist。如果hash中条目的条目个数或者value长度达到阀值,将会被重构为hashtable。这个参数指的是ziplist中允许存储的最大条目个数，，默认为512，建议为128 hash-max-ziplist-value 64 ziplist中允许条目value值最大字节数，默认为64，建议为1024
 
-38 hash-max-ziplist-entries 512
+ 
+* list-max-ziplist-entries 512 list-max-ziplist-value 64 对于list类型,将会采取ziplist,linkedlist两种编码类型。解释同上。
 
-hash类型的数据结构在编码上可以使用ziplist和hashtable。
+ 
 
-ziplist的特点就是文件存储\(以及内存存储\)所需的空间较小,在内容较小时,性能和hashtable几乎一样.因此redis对hash类型默认采取ziplist。
+* set-max-intset-entries 512
+ intset中允许保存的最大条目个数,如果达到阀值,intset将会被重构为hashtable
 
-如果hash中条目的条目个数或者value长度达到阀值,将会被重构为hashtable。
+  
 
-这个参数指的是ziplist中允许存储的最大条目个数，，默认为512，建议为128
+* zset-max-ziplist-entries 128 zset-max-ziplist-value 64 zset为有序集合,有2中编码类型:ziplist,skiplist。因为"排序"将会消耗额外的性能,当zset中数据较多时,将会被重构为skiplist。
 
-hash-max-ziplist-value 64
+* activerehashing yes 是否开启顶层数据结构的rehash功能,如果内存允许,请开启。rehash能够很大程度上提高K-V存取的效率
 
-ziplist中允许条目value值最大字节数，默认为64，建议为1024
+ 
+* 客户端buffer控制
+  client-output-buffer-limit normal 0 0 0
+  
+  client-output-buffer-limit slave 256mb 64mb 60
+  
+  client-output-buffer-limit pubsub 32mb 8mb 60
+  
+  客户端buffer控制。
+  
+  在客户端与server进行的交互中,每个连接都会与一个buffer关联,此buffer用来队列化等待被client接受的响应信息。
+  
+  如果client不能及时的消费响应信息,那么buffer将会被不断积压而给server带来内存压力.如果buffer中积压的数据达到阀值,将会
+  
+  导致连接被关闭,buffer被移除。
+  
+  buffer控制类型包括:
 
-39 
-
-list-max-ziplist-entries 512
-
-list-max-ziplist-value 64
-
-对于list类型,将会采取ziplist,linkedlist两种编码类型。解释同上。
-
-40 
-
-set-max-intset-entries 512
-
-intset中允许保存的最大条目个数,如果达到阀值,intset将会被重构为hashtable
-
-41 
-
-zset-max-ziplist-entries 128
-
-zset-max-ziplist-value 64
-
-zset为有序集合,有2中编码类型:ziplist,skiplist。
-
-因为"排序"将会消耗额外的性能,当zset中数据较多时,将会被重构为skiplist。
-
-42 activerehashing yes
-
-是否开启顶层数据结构的rehash功能,如果内存允许,请开启。
-
-rehash能够很大程度上提高K-V存取的效率
-
-43 
-
-client-output-buffer-limit normal 0 0 0
-
-client-output-buffer-limit slave 256mb 64mb 60
-
-client-output-buffer-limit pubsub 32mb 8mb 60
-
-客户端buffer控制。
-
-在客户端与server进行的交互中,每个连接都会与一个buffer关联,此buffer用来队列化等待被client接受的响应信息。
-
-如果client不能及时的消费响应信息,那么buffer将会被不断积压而给server带来内存压力.如果buffer中积压的数据达到阀值,将会
-
-导致连接被关闭,buffer被移除。
-
-buffer控制类型包括:
-
-normal
-
- -
-
-&gt;
-
- 普通连接；
-
-slave
-
- -
-
-&gt;
-
-与slave之间的连接；
-
-pubsub
-
- -
-
-&gt;
+normal - &gt; 普通连接；slave - &gt; 与slave之间的连接；pubsub - &gt;
 
 pub/sub类型连接，此类型的连接，往往会产生此种问题;因为pub端会密集的发布消息,但是sub端可能消费不足.
 

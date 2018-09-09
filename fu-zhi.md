@@ -38,14 +38,13 @@ PSYNC命令具有完整重同步（fullresynchronization）和部分重同步（
     当完成了同步之后,主从服务器就会进入命令传播阶段,这时主服务器只要一直将自己执行的写命令发送给从服务器，而从服务器只要一直接收并执行主服务器发来的写命令，就可以保证主从服务器一直保持一致了
 
 
-
-
 * **心跳检测**
 
     在命令传播阶段,从服务器默认会以每秒一次的频率,向主服务器发送命令：
      
  ```
- REPLCONF ACK <replication_ offset>
+ 
+ REPLCONF ACK <replication_offset>
  
  ```
  
