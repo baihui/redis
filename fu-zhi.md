@@ -4,6 +4,7 @@
 SLAVEOF < master_ ip> < master_ port>
 ```
 
+
 * **连接**
 
 * **通过PSYNC命令进行同步**
