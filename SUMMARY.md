@@ -9,4 +9,5 @@
 * [数据存储优化机制](shu-ju-cun-chu-you-hua-ji-zhi.md)
 * [数据结构](shu-ju-jie-gou.md)
 * [事务](shi-wu.md)
+* [字典](zi-dian.md)
 
