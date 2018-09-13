@@ -20,20 +20,7 @@
 
 ##### 命令解析
 
-在服务器将客户端发送的命令请求保存到客户端状态的querybuf属性之后，服务器将对命令请求的内容进行分析，并将得出的命令参数以及命令参数的个数分别保存到客户端状态的argv属性和argc属性
-
-
-```
-    typedef struct redisClient { 
-        ... 
-        robj **argv; 
-        int argc; 
-    } redisClient;
-    
-```
-    
-
-  
+在querybuf内容进行分析，并将得出的命令参数以及命令参数的个数分别保存到客户端状态的argv属性和argc属性
 ##### 命令查找
 
 
