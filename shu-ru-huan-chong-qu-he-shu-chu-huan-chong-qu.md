@@ -7,5 +7,5 @@
         // ... sds querybuf; // ... 
     } redisClient; 
     ```
-    将命令保存在querybuf中，它的类型是sds字符串大小不能超过1G
+    将命令保存在querybuf中，它的类型是[sds字符串](/sdsdong-tai-zi-fu-4e3229.md)大小不能超过1G
 
