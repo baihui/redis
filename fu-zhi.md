@@ -49,7 +49,7 @@ PSYNC命令具有完整重同步（fullresynchronization）和部分重同步（
  
  ```
  
-$$其中replication_offset是从服务器当前的复制偏移量,发送REPLCONF ACK命令对于主从服务器有三个作用$$：
+$$ 其中replication_offset是从服务器当前的复制偏移量,发送REPLCONF ACK命令对于主从服务器有三个作用 $$：
     * 检测主从服务器的网络连接状态 
         通过向主服务器发送 INFO replication命令， 在列出的从服务器列表的lag一栏表示多长时间没通讯了，
  
@@ -63,11 +63,6 @@ $$其中replication_offset是从服务器当前的复制偏移量,发送REPLCONF
     
     * 检测命令丢失
     
-    
-
-
- 
- 
   
 #### redis主从复制常见的一些问题
 
