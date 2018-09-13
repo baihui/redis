@@ -48,8 +48,7 @@ int argc;
 
 
 
-![](/assets/redis-shuru-shurchu.png)
-
+ ![](/assets/redis-21321.png)
 
 
 #### 输出缓冲区
