@@ -21,6 +21,19 @@
 ##### 命令解析
 
 在querybuf内容进行分析，并将得出的命令参数以及命令参数的个数分别保存到客户端状态的argv属性和argc属性
+
+
+```
+typedef struct redisClient { 
+...
+robj **argv;
+int argc;
+} redisClient;
+
+
+```
+
+
 ##### 命令查找
 
 
