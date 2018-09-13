@@ -7,21 +7,22 @@
 
 Redis中的字典由dict.h/dict结构表示： 
 
-    ``` C
-    typedef struct dict 
-    { 
-        //类型特定函数
-        dictType *type; 
-        //私有数据 
-        void *privdata; 
-        //哈希表
-        dictht ht[ 2]; 
-        //rehash索引当rehash不在进行时， 值为-1
-        in trehashidx; /* rehashing not in progress if rehashidx == -1 */ 
-    } dict;
-    
-    
-    ```
+``` 
+
+typedef struct dict 
+{ 
+    //类型特定函数
+    dictType *type; 
+    //私有数据 
+    void *privdata; 
+    //哈希表
+    dictht ht[ 2]; 
+    //rehash索引当rehash不在进行时， 值为-1
+    in trehashidx; /* rehashing not in progress if rehashidx == -1 */ 
+} dict;
+
+
+```
 
 * type属性和privdata属性是针对不同类型的键值对，为创建多态字典而设置的：
     * type属性是一个指向dictType结构的指针，每个dictType结构保存了一簇用于操作特定类型键值对的函数，Redis会为用途不同的字典设置不同的类型特定函数。
@@ -30,7 +31,7 @@ Redis中的字典由dict.h/dict结构表示：
     * rehashidx 是一个和rehash有关的属性，它记录了rehash目前的进度，如果目前没有在进行rehash，那么它的值为-1。
     
 
-``` C
+``` 
 
 typedef struct dictType { 
     //计算哈希值的函数 
@@ -70,19 +71,19 @@ typedef struct dictType {
 
 * 哈希表结构体dictht
 
-    ``` C
-    typedef struct dictht { 
-    //哈希表数组
-    dictEntry **table; 
-    //哈希表大小 
-    unsigned long size; 
-    //哈希表大小掩码，用于计算索引总是等于size-1 
-    unsigned long sizemask; 
-    //该哈希表已有节点的数量
-    unsigned long used;
-    } dictht;
-    
-    ```
+``` 
+typedef struct dictht { 
+//哈希表数组
+dictEntry **table; 
+//哈希表大小 
+unsigned long size; 
+//哈希表大小掩码，用于计算索引总是等于size-1 
+unsigned long sizemask; 
+//该哈希表已有节点的数量
+unsigned long used;
+} dictht;
+
+```
 
     * table属性是一个数组，数组中的每个元素都是一个指向dict.h/dictEntry结构的指针，每个dictEntry结构保存着一个键值对。
     * size属性记录了哈希表的大小，也即是table数组的大小，
@@ -93,18 +94,18 @@ typedef struct dictType {
     
 * 节点结构体dictEntry
 
-    ``` C
+``` 
 
-    typedef struct dictEntry { 
-    //键 
-    void *key; 
-    //值 
-    union{ void *val; uint64_ tu64; int64_ ts64; } v; 
-    //指向下个哈希表节点， 形成链表 
-    struct dictEntry *next;
-    } dictEntry ;
+typedef struct dictEntry { 
+//键 
+void *key; 
+//值 
+union{ void *val; uint64_ tu64; int64_ ts64; } v; 
+//指向下个哈希表节点， 形成链表 
+struct dictEntry *next;
+} dictEntry ;
 
-    ```
+```
 
     * key属性保存着键值对中的键，
     * v属性则保存着键值对中的值，其中键值对的值可以是一个指针，或者是一个uint64_t整数，又或者是一个int64_t整数。
