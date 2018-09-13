@@ -76,7 +76,7 @@
    
    
    
-* AOF持久化的效率和安全性 （[事件执行就保存](/shi-jian.md)）
+* AOF持久化的效率和安全性 （[事件执行就保存](/shi-jian.md)）所以AOF持久化是实时进行的
 
    * always [每个事件](/shi-jian.md)循环都要将aof_buf缓冲区中的所有内容写入到AOF文件，并且同步AOF文件。
    * everysec [每个事件](/shi-jian.md)循环都要将aof_buf缓冲区中的所有内容写入到AOF文件，并且每隔一秒就要在子线程中对AOF文件进行一次同步。
