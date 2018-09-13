@@ -62,9 +62,6 @@ typedef struct dictType {
 
 
 
-
-
-黄健宏. Redis设计与实现 (数据库技术丛书) (Kindle 位置 697-700). 机械工业出版社. Kindle 版本.  
  
 
 
