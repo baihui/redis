@@ -16,9 +16,9 @@
   * [字符串对象](dui-xiang/zi-fu-chuan-dui-xiang.md)
 * [数据结构](shu-ju-jie-gou.md)
   * [字典](zi-dian.md)
+  * [集合](ji-he.md)
 * [排序](pai-xu.md)
 * [集群](ji-qun.md)
 * [发布和订阅](fa-bu-he-ding-yue.md)
 * [高可用](gao-ke-yong.md)
-* [集合](ji-he.md)
 
