@@ -2,7 +2,7 @@
 
 ![](/assets/redis-对象.png)
 
-* 字符串对象
+* [字符串对象](/sdsdong-tai-zi-fu-4e3229.md)
 
 * 列表对象
 
