@@ -4,17 +4,17 @@
 
 * [字符串对象](/sdsdong-tai-zi-fu-4e3229.md)
 
-* 列表对象
+* [列表对象](/dui-xiang/lie-biao-dui-xiang.md)
 
-* 哈希对象 
+* [哈希对象](/dui-xiang/ha-xi-dui-xiang.md) 
 
-* 集合对象
+* [集合对象](/dui-xiang/ji-he-dui-xiang.md)
    
     * [字典结构](/zi-dian.md)是一种抽象结构，实际数据存放在哈希表中，而他记录了，计算哈希值函数和指向哈希表的指针    
     * 整数集结构
     
 
-* 有序集合对象
+* [有序集合对象](/dui-xiang/you-xu-ji-he-dui-xiang.md)
 
 
 
