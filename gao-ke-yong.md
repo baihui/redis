@@ -2,5 +2,4 @@
 
 
 
-
-![](/assets/高可用.png)
+ ![](/assets/gaokeyong.png)
