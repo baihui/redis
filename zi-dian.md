@@ -1,10 +1,9 @@
 
 * 字典又称为符号表、 关联数组 或 映射（ map）， 是一种用于保存键值对的抽象数据结构。 在字典中一个键（ key） 可以和 一个值（ value） 进行关联（ 或者说 将 键 映射 为 值）， 这些关联的键和值就称为键值对。
 
+> 字典使用哈希表作为底层实现，一个哈希表里面可以有多个哈希表节点，而每个哈希表节点就保存了字典中的一个键值对
 
-> Redis的字典使用哈希表作为底层实现，一个哈希表里面可以有多个哈希表节点，而每个哈希表节点就保存了字典中的一个键值对
-
-Redis中的字典由dict.h/dict结构表示： 
+ * 字典结构： 
 
 ``` 
 
@@ -24,29 +23,32 @@ typedef struct dict
 ```
 
 * type属性和privdata属性是针对不同类型的键值对，为创建多态字典而设置的：
-    * type属性是一个指向dictType结构的指针，每个dictType结构保存了一簇用于操作特定类型键值对的函数，Redis会为用途不同的字典设置不同的类型特定函数。
+    * type属性是一个指向dictType结构的指针，每个dictType结构保存了一簇用于操作特定类型键值对的函数，用途不同的字典设置不同的类型特定函数。
+    
+    ``` 
+    typedef struct dictType { 
+        //计算哈希值的函数 
+        unsigned int (*hashFunction)( const void *key); 
+        //复制键的函数 
+        void *(*keyDup)( void *privdata, const void *key); 
+        //复制值的函数
+        void *(*valDup)( void *privdata, const void *obj); 
+        // 对比键的函数
+        int (*keyCompare)( void *privdata, const void *key1, const void *key2); 
+        // 销毁键的函数 
+        void (*keyDestructor)( void *privdata, void *key); 
+        //销毁值的函数 void (*valDestructor)( void *privdata, void *obj); 
+    } dictType;
+    
+    ``` 
+
+
     * privdata属性则保存了需要传给那些类型特定函数的可选参数。
     * ht属性是一个包含两个项的数组，数组中的每个项都是一个dictht哈希表，一般情况下，字典只使用ht[0]哈希表，ht[1]哈希表只会在对ht[0]哈希表进行rehash时使用。除了ht[1]之外，
     * rehashidx 是一个和rehash有关的属性，它记录了rehash目前的进度，如果目前没有在进行rehash，那么它的值为-1。
     
 
-``` 
-
-typedef struct dictType { 
-    //计算哈希值的函数 
-    unsigned int (*hashFunction)( const void *key); 
-    //复制键的函数 
-    void *(*keyDup)( void *privdata, const void *key); 
-    //复制值的函数
-    void *(*valDup)( void *privdata, const void *obj); 
-    // 对比键的函数
-    int (*keyCompare)( void *privdata, const void *key1, const void *key2); 
-    // 销毁键的函数 
-    void (*keyDestructor)( void *privdata, void *key); 
-    //销毁值的函数 void (*valDestructor)( void *privdata, void *obj); 
-} dictType;
-
-``` 
+ 
 
 函数的使用在添加或者删除用到，如下 hset k1 v1：
 
