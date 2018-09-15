@@ -7,13 +7,13 @@
    
    * REDIS_ENCODING_RAW	简单动态字符串
    
-   * REDIS_ENCODING_HT	字典
+   * [REDIS_ENCODING_HT(字典)](/zi-dian.md)
    
    * REDIS_ENCODING_LINKEDLIST	双端链表
    
    * REDIS_ENCODING_ZIPLIST	压缩列表
    
-   * REDIS_ENCODING_INTSET	整数集合
+   * REDIS_ENCODING_INTSET(整数集合)
    
    * REDIS_ENCODING_SKIPLIST	跳跃表和字典
    
