@@ -18,6 +18,8 @@
    * REDIS_ENCODING_SKIPLIST	跳跃表和字典
    
    
+  ![](/assets/redis-对象.png)
+
    
 
 
