@@ -17,6 +17,7 @@
 * [数据结构](shu-ju-jie-gou.md)
   * [字典](zi-dian.md)
   * [集合](ji-he.md)
+  * [字符串](ji-he/zi-fu-chuan.md)
 * [排序](pai-xu.md)
 * [集群](ji-qun.md)
 * [发布和订阅](fa-bu-he-ding-yue.md)
