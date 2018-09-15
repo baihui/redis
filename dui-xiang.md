@@ -1,4 +1,4 @@
-**redis使用redisObject结构体来表示一个对象，一个k-v键值对的创建会包含两个对象，一个对象键对象，另一个值对象，健对象总是字符串，而值对象却有五种类型的其中一种，这五种对象底层的[数据结构](/shu-ju-jie-gou.md)是动态引用的**
+**redis使用redisObject结构体来表示一个对象，一个k-v键值对的创建会包含两个对象，一个对象键对象，另一个值对象，健对象总是字符串，而值对象却有五种类型的其中一种，这五种对象存放数据底层的[数据结构](/shu-ju-jie-gou.md)是通过encoding 指定的**
 
  
 redis中的一个对象的结构体表示如下：
@@ -29,7 +29,8 @@ void *ptr;
 ![](/assets/redis-对象.png)
 
 * [字符串对象](/sdsdong-tai-zi-fu-4e3229.md)
-
+  字符串对象可以是int、aw或者embstr 数据结构。
+ 
 * [列表对象](/dui-xiang/lie-biao-dui-xiang.md)
 
 * [哈希对象](/dui-xiang/ha-xi-dui-xiang.md) 
