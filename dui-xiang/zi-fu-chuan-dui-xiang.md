@@ -30,7 +30,25 @@
  * int
     
      如果一个字符串对象需要存放的值是整数并且可以用long类型表示，那么encoding=int，并且将值，直接存放redisObject的ptr属性上，如果不是整数如有小数点那么用emstr编码表示。
+     
+     
+     ```
+     
+     127.0.0.1:6379> set sds_int "123"
+     OK
+     127.0.0.1:6379> object encoding sds_int
+     "int"
+     
+     127.0.0.1:6379> del sds_int
+     (integer) 1
+     127.0.0.1:6379> set sds_int 123.04
+     OK 
+     127.0.0.1:6379> object encoding sds_int
+     "embstr"
     
+     ```
+   
+      
  * raw
    
    如果字符串对象保存的是字符串，并且长度**大于32**，那么就选用raw编码
