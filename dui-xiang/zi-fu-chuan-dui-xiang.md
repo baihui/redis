@@ -1,4 +1,4 @@
-**字符串对象的编码(encoding)可以是int,raw或者embstr其中之一 ，embstr和raw 底层都是[sdshdr字符串结构](/ji-he/zi-fu-chuan.md)**
+**字符串对象的编码(encoding)可以是int,raw或者embstr其中之一 ，embstr和raw底层实现都是[sdshdr字符串结构](/ji-he/zi-fu-chuan.md)**
 
 
 * **encoding选择不同的编码也就是底层数据存放在不同结构体中**
