@@ -1,4 +1,4 @@
-#### Redis列表是简单的字符串列表，按照插入顺序排序。你可以添加一个元素到列表的头部或者尾部,列表对象的编码(encoding)可以是ziplist或者linkedlist 
+#### Redis列表是简单的字符串列表，按照插入顺序排序。你可以添加一个元素到列表的头部或者尾部,列表对象的编码(encoding)可以是[ziplist](/lie-biao.md)或者linkedlist 
 
 
 
