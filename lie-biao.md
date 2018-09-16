@@ -3,7 +3,7 @@
 
 
 * **[列表对象](/dui-xiang/lie-biao-dui-xiang.md)**
-> quicklist结构是在redis 3.2版本中新加的数据结构，替换了zipList
+> quicklist结构是在redis 3.2版本中新加的数据结构，在列表对象上替换了zipList
 
 如下
 
