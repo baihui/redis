@@ -4,14 +4,16 @@
 
 ```
 
-lpush bh 1,a,3
+127.0.0.1:6379> rpush k1 1 a b c 2
+(integer) 5
     
 ```
 
 或者
 
 ```
-lpush bh 2
+127.0.0.1:6379> rpush k1 2
+(integer) 6
 
 ```
 
