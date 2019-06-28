@@ -22,7 +22,7 @@
 * [排序](pai-xu.md)
 * [集群](ji-qun.md)
 * [发布和订阅](fa-bu-he-ding-yue.md)
-  * 普通
-  * 模糊
+  * [普通](fa-bu-he-ding-yue/pu-tong.md)
+  * [模糊](fa-bu-he-ding-yue/mo-hu.md)
 * [高可用](gao-ke-yong.md)
 
