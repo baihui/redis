@@ -9,7 +9,7 @@
 * [事务](shi-wu.md)
   * [MULTI](shi-wu/multi.md)
   * [EXEC](shi-wu/exec.md)
-  * WATCH
+  * [WATCH](shi-wu/watch.md)
 * [输入缓冲区和输出缓冲区](shu-ru-huan-chong-qu-he-shu-chu-huan-chong-qu.md)
 * [对象](dui-xiang.md)
   * [列表对象](dui-xiang/lie-biao-dui-xiang.md)
