@@ -7,6 +7,9 @@
 * [事件](shi-jian.md)
 * [数据存储优化机制](shu-ju-cun-chu-you-hua-ji-zhi.md)
 * [事务](shi-wu.md)
+  * MULTI
+  * EXEC
+  * WATCH
 * [输入缓冲区和输出缓冲区](shu-ru-huan-chong-qu-he-shu-chu-huan-chong-qu.md)
 * [对象](dui-xiang.md)
   * [列表对象](dui-xiang/lie-biao-dui-xiang.md)
